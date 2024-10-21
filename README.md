@@ -2,6 +2,12 @@
 
 A [Session](https://getsession.org) monitoring bot for Session Nodes. Add nodes to a watch list and get notified on Session when something happens.
 
+To use the bot on Session message you just need to send it a message:
+
+ONS: nodebot
+
+Session ID: 0503ebe227d3debbe467222e4134ec660e8c68d11b54ff527204393f5f4eeca125
+
 ## Features
 
 - ✅ Direct messages & management on [Session](https://getsession.org) 
