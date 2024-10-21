@@ -1,0 +1,33 @@
+{
+  "name": "session-node-bot",
+  "productName": "Session Node Bot",
+  "description": "A Session monitoring bot for Session Nodes.",
+  "version": "0.1.0",
+  "license": "GPL-3.0",
+  "author": {
+    "name": "Aerilym",
+    "email": "aerilym@pm.me"
+  },
+  "module": "index.ts",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aerilym/session-node-bot.git"
+  },
+  "scripts": {
+    "start": "bun run index.ts",
+    "format": "bunx biome format --write .",
+    "lint": "bunx biome lint --write .",
+    "check": "bunx biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@session.js/client": "^0.0.47"
+  }
+}
