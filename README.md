@@ -4,11 +4,11 @@ A [Session](https://getsession.org) monitoring bot for Session Nodes. Add nodes 
 
 To use the bot on Session, you just need to send it a message:
 
-ONS: nodebot
+**ONS:** nodebot
 
-Session ID: 0503ebe227d3debbe467222e4134ec660e8c68d11b54ff527204393f5f4eeca125
+**Session ID:** 0503ebe227d3debbe467222e4134ec660e8c68d11b54ff527204393f5f4eeca125
 
-**Note: ** The bot currently only runs on the Session Testnet, the bot will notify you once Mainnet is available.
+**Note:** The bot currently only runs on the Session Testnet, the bot will notify you once Mainnet is available.
 
 ## Features
 
@@ -25,6 +25,10 @@ WIP:
 - 🔳 Lookup Session Node info & stats
 - 🔳 Notifications of new Open Multi-contributor nodes
 - 🔳 Rewards stats
+
+## Usage
+
+The bot will send you an onboarding message if you message it and havent joined yet. You can send it a `/help` command message to get a list of available commands, but most commands won't be available until you use the `/join` command.
 
 ## Getting Started
 
