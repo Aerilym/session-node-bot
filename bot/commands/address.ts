@@ -16,7 +16,7 @@ export enum ADDRESS_ACTION {
 }
 
 const isAddressAction = (action: string): action is ADDRESS_ACTION =>
-  action === 'add' || action === 'remove' || action === 'list';
+  action === 'add' || action === 'remove' || action === 'list' || action === 'nodes';
 
 function addEthAddress(sessionId: string, address: Address) {
   const [err, res] = safeTrySync(() =>
