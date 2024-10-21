@@ -1,6 +1,13 @@
 import type { SNState } from './getNodes.ts';
 import { getInfo, type NetworkInfo } from './getInfo.ts';
 
+const formatSearchableAddress = (address: string) => {
+  if (address.startsWith('0x') || address.startsWith('0X')) {
+    return address.substring(2).toUpperCase();
+  }
+  return address.toUpperCase();
+};
+
 const nodes = new Map<string, SNState>();
 const nodesForContributorEthAddress = new Map<string, Set<string>>();
 const nodesForOperatorEthAddress = new Map<string, Set<string>>();
@@ -17,7 +24,7 @@ export const hasNode = (pubkey: string) => nodes.has(pubkey);
 export const getNodesLength = () => nodes.size;
 export const setNode = (pubkey: string, node: SNState) => {
   nodes.set(pubkey, node);
-  const address = `0x${node.operator_address}`.toUpperCase();
+  const address = formatSearchableAddress(node.operator_address);
 
   const operatorNodes = nodesForOperatorEthAddress.get(address);
 
@@ -27,7 +34,7 @@ export const setNode = (pubkey: string, node: SNState) => {
   );
 
   for (const contributor of node.contributors) {
-    const contributorAddress = `0x${contributor.address}`.toUpperCase();
+    const contributorAddress = formatSearchableAddress(contributor.address);
     const contributorNodes = nodesForContributorEthAddress.get(contributorAddress);
 
     nodesForContributorEthAddress.set(
@@ -37,10 +44,12 @@ export const setNode = (pubkey: string, node: SNState) => {
   }
 };
 
-export const getNodePubkeysForOperatorAddress = (address: string) =>
-  nodesForOperatorEthAddress.get(address);
-export const getNodePubkeysForContributorAddress = (address: string) =>
-  nodesForContributorEthAddress.get(address);
+export const getNodePubkeysForOperatorAddress = (address: string) => {
+  return nodesForOperatorEthAddress.get(formatSearchableAddress(address));
+};
+export const getNodePubkeysForContributorAddress = (address: string) => {
+  return nodesForContributorEthAddress.get(formatSearchableAddress(address));
+};
 
 let networkInfo = await getInfo();
 

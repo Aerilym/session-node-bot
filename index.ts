@@ -43,6 +43,7 @@ import { getInfo } from './nodes/getInfo.ts';
 import { stakeCommand } from './bot/commands/stake.ts';
 import { infoCommand } from './bot/commands/info.ts';
 import { decodeSessionId } from './util/encoding.ts';
+import { onboardingCommand } from './bot/commands/onboarding.ts';
 
 // Init bot
 const timedLogInit = log.timed.info('Initializing bot...');
@@ -141,6 +142,7 @@ registerCommand(privacyCommand);
 registerCommand(networkCommand);
 registerCommand(stakeCommand);
 registerCommand(infoCommand);
+registerCommand(onboardingCommand);
 
 timedLogRegister.end(`Registered ${getAddedCommands().length} commands`);
 
@@ -178,7 +180,8 @@ if (POLLER_NODE_FETCH_INTERVAL_SECONDS > 0) {
   const timedLogInitialPoll = log.timed.info('Fetching initial nodes...');
 
   await getNodes();
-  if (getNodesLength() === 0) log.error('Found no nodes on initial fetch. Please check the network and try again.');
+  if (getNodesLength() === 0)
+    log.error('Found no nodes on initial fetch. Please check the network and try again.');
 
   timedLogInitialPoll.end('Initial nodes fetched');
 }
@@ -213,7 +216,9 @@ messageManager.addMessageHandler(
   }),
 );
 
-timedLogReplacement.end(`Message handler replaced. Initializing with ${messageManager.length} message handlers`);
+timedLogReplacement.end(
+  `Message handler replaced. Initializing with ${messageManager.length} message handlers`,
+);
 
 // Remove processed messages from the swarm messages
 const missedMessages = [];
@@ -252,7 +257,9 @@ if (dbState) {
     }
   } else {
     if (lastMessageIdx + 1 === swarmMessages.length) {
-      log.info(`Last msg processed ${lastMessageId} was the last msg received at ${lastMessageTimestamp}`);
+      log.info(
+        `Last msg processed ${lastMessageId} was the last msg received at ${lastMessageTimestamp}`,
+      );
     } else {
       missedMessages.push(...swarmMessages.slice(lastMessageIdx + 1));
     }
@@ -261,7 +268,8 @@ if (dbState) {
   // Process all missed messages
   const timedLogReplay = log.timed.info(`Processing ${missedMessages.length} missed messages...`);
 
-  if (missedMessages.length > 100) throw new Error('This might be spammy, are you sure? Change the limit here to continue.');
+  if (missedMessages.length > 100)
+    throw new Error('This might be spammy, are you sure? Change the limit here to continue.');
   missedMessages.forEach(messageManager.handleMessage.bind(messageManager));
 
   timedLogReplay.end(`Processed ${missedMessages.length} missed messages`);

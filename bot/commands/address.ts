@@ -50,7 +50,9 @@ function removeEthAddress(sessionId: string, address: Address) {
   }
 
   if (res?.changes === 0) {
-    return new SessionResponse('Ethereum address not found. To see your addresses use /address list');
+    return new SessionResponse(
+      'Ethereum address not found. To see your addresses use /address list',
+    );
   }
 
   log.debug('Ethereum address removed: ', res);
@@ -87,10 +89,8 @@ export function listEthAddresses(sessionId: string) {
 }
 
 function getEthAddressNodes(address: Address) {
-  const encodedAddress = address.toUpperCase();
-
-  const operatorNodeAddresses = getNodePubkeysForOperatorAddress(encodedAddress) ?? new Set();
-  const contributedNodeAddresses = getNodePubkeysForContributorAddress(encodedAddress) ?? new Set();
+  const operatorNodeAddresses = getNodePubkeysForOperatorAddress(address) ?? new Set();
+  const contributedNodeAddresses = getNodePubkeysForContributorAddress(address) ?? new Set();
 
   const contributedNotOperated = contributedNodeAddresses?.difference(operatorNodeAddresses);
 

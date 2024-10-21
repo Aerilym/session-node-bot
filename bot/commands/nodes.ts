@@ -6,6 +6,7 @@ import type { Command } from './command.ts';
 import { watchCommand } from './watch.ts';
 import { safeTrySync } from '../../util/try.ts';
 
+// TODO - alias /nodes add and /nodes remove to /watch and /unwatch
 export const nodesCommand: Command = {
   name: 'nodes',
   aliases: ['n', 'watchlist'],
