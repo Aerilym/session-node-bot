@@ -21,6 +21,7 @@ import {
   POLLER_TEST_WAIT_TIME_SECONDS,
   RPC_SERVICE_NODE,
   RPC_SERVICE_NODE_BACKUP,
+  SESSION_ADMIN_ADDRESS,
   SESSION_REMOTE_LOG_ADDRESS,
   SESSION_REMOTE_LOG_ADDRESS_ERROR,
   SESSION_REMOTE_LOG_PREFIX,
@@ -44,6 +45,10 @@ import { stakeCommand } from './bot/commands/stake.ts';
 import { infoCommand } from './bot/commands/info.ts';
 import { decodeSessionId } from './util/encoding.ts';
 import { onboardingCommand } from './bot/commands/onboarding.ts';
+import { wait } from './util/time.ts';
+import { sendMessageWithRetries, sendRawMessageWithRetries } from './bot/sendReplyWithRetries.ts';
+import { AdminManager } from './bot/admin/auth.ts';
+import { disableCommand } from './bot/commands/admin/disable.ts';
 
 // Init bot
 const timedLogInit = log.timed.info('Initializing bot...');
@@ -117,13 +122,11 @@ timedLogStartPoller.end('Message manager & poller started');
 // Wait for poller test message
 const timedLogWaitForTestMessage = log.timed.info('Waiting for poller test message...');
 
-let secondsWaitedFor = 0;
-while (!testMessageReceived) {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  secondsWaitedFor++;
-  if (secondsWaitedFor > POLLER_TEST_WAIT_TIME_SECONDS)
-    throw new Error('Poller test message not received');
-}
+const foundPolledMessage = await wait(
+  () => testMessageReceived,
+  POLLER_TEST_WAIT_TIME_SECONDS * 1000,
+);
+if (!foundPolledMessage) throw new Error('Poller test message not received');
 
 timedLogWaitForTestMessage.end('Poller message received');
 
@@ -143,6 +146,7 @@ registerCommand(networkCommand);
 registerCommand(stakeCommand);
 registerCommand(infoCommand);
 registerCommand(onboardingCommand);
+registerCommand(disableCommand);
 
 timedLogRegister.end(`Registered ${getAddedCommands().length} commands`);
 
@@ -169,10 +173,11 @@ if (POLLER_NODE_FETCH_INTERVAL_SECONDS > 0) {
   }, POLLER_NODE_FETCH_INTERVAL_SECONDS * 1000);
 
   setInterval(async () => {
-    const [err, res] = await safeTry(getInfo());
+    const [err, res] = await getInfo();
 
     if (err) return void log.error(err);
 
+    if (!res) return;
     setNetworkInfo(res);
   }, POLLER_NODE_FETCH_INTERVAL_SECONDS * 1000);
 
@@ -296,4 +301,27 @@ await log.remoteFlush();
 
 timedLogInitMessage.end('Init message sent');
 
-export { client };
+let adminManager: AdminManager | null = null;
+// Request admin password
+if (SESSION_ADMIN_ADDRESS) {
+  log.info(`Session admin address provides, sending admin invite to ${SESSION_ADMIN_ADDRESS}`);
+  adminManager = new AdminManager({ sessionId });
+  const adminRequestMessage = 'Reply to this message with your admin password to set it.';
+  await sendMessageWithRetries(SESSION_ADMIN_ADDRESS, adminRequestMessage);
+  messageManager.addMessageHandler(
+    new MessageHandler(69, async (message) => {
+      if (
+        message.text &&
+        message.replyToMessage?.text === adminRequestMessage &&
+        message.replyToMessage.author === botSessionId
+      ) {
+        await adminManager?.setPassword(message.text);
+        messageManager.removeMessageHandler(69);
+      }
+    }),
+  );
+} else {
+  log.warn('Session admin address not provided, admin functions disabled.');
+}
+
+export { client, adminManager };

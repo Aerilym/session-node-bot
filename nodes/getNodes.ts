@@ -18,16 +18,32 @@ export type SNState = {
   operator_address: string;
 };
 
+let disabled = false;
+
+export const disableGetNodesFetch = () => {
+  disabled = true;
+};
+
+export const enableGetNodesFetch = () => {
+  disabled = false;
+};
+
 export const getNodes = async () => {
   const decommissionedNodes: SNState[] = [];
-  const [err, res] = await rpcFetch({
+  if (disabled) {
+    log.info('getNodes disabled. Returning empty decomm list');
+    return { decommissionedNodes };
+  }
+  const [err, res] = await rpcFetch<{
+    service_node_states?: Array<SNState>;
+  }>({
     method: 'get_service_nodes',
     params: {},
   });
 
   if (err) {
-    log.error(err)
-    return { decommissionedNodes }
+    log.error(err);
+    return { decommissionedNodes };
   }
 
   if (
