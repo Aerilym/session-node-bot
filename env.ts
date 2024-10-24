@@ -74,6 +74,13 @@ if (!RPC_SERVICE_NODE) throw new Error('RPC_SERVICE_NODE is not set');
 const RPC_SERVICE_NODE_BACKUP = process.env.RPC_SERVICE_NODE_BACKUP!;
 if (!RPC_SERVICE_NODE_BACKUP) throw new Error('RPC_SERVICE_NODE_BACKUP is not set');
 
+// biome-ignore lint/style/noNonNullAssertion: This is fine
+const RPC_FETCH_MAX_RETRIES_STRING = process.env.RPC_FETCH_MAX_RETRIES!;
+if (!RPC_FETCH_MAX_RETRIES_STRING) throw new Error('RPC_FETCH_MAX_RETRIES is not set')
+const RPC_FETCH_MAX_RETRIES = Number.parseInt(
+  RPC_FETCH_MAX_RETRIES_STRING,
+);
+
 export {
   BOT_SECRET_KEY,
   BOT_USERNAME,
@@ -88,4 +95,5 @@ export {
   DECOMM_NOTIFICATION_FREQUENCY_MS,
   RPC_SERVICE_NODE,
   RPC_SERVICE_NODE_BACKUP,
+  RPC_FETCH_MAX_RETRIES,
 };

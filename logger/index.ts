@@ -37,8 +37,10 @@ function getLevelName(level: LOG_LEVEL) {
   }
 }
 
+const getLogDate = () => new Date().toISOString().substring(0, 19).replace('T', ' ')
+
 const formatLog = (level: LOG_LEVEL, args: Array<unknown>) => {
-  args.unshift(`[${new Date().toISOString().substring(0, 19).replace('T', ' ')}]`);
+  args.unshift(`[${getLogDate()}]`);
   args.unshift(`${getColorForLevel(level)}[${getLevelName(level)}]`);
   return args;
 };
@@ -54,13 +56,13 @@ const basicLogs = {
 
 const sessionLogInfo = new SessionLog({
   internalLogger: basicLogs,
-  template: (text: string) => `${SESSION_REMOTE_LOG_PREFIX} ${text}`,
+  template: (text: string) => `${SESSION_REMOTE_LOG_PREFIX} [${getLogDate}] ${text}`,
   sessionId: SESSION_REMOTE_LOG_ADDRESS,
 });
 
 const sessionLogError = new SessionLog({
   internalLogger: basicLogs,
-  template: (text: string) => `${SESSION_REMOTE_LOG_PREFIX_ERROR} ${text}`,
+  template: (text: string) => `${SESSION_REMOTE_LOG_PREFIX_ERROR} [${getLogDate}] ${text}`,
   sessionId: SESSION_REMOTE_LOG_ADDRESS_ERROR,
 });
 

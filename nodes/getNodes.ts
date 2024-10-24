@@ -19,12 +19,17 @@ export type SNState = {
 };
 
 export const getNodes = async () => {
-  const res = await rpcFetch({
+  const decommissionedNodes: SNState[] = [];
+  const [err, res] = await rpcFetch({
     method: 'get_service_nodes',
     params: {},
   });
 
-  const decommissionedNodes: SNState[] = [];
+  if (err) {
+    log.error(err)
+    return { decommissionedNodes }
+  }
+
   if (
     res &&
     'service_node_states' in res &&
