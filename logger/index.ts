@@ -56,13 +56,13 @@ const basicLogs = {
 
 const sessionLogInfo = new SessionLog({
   internalLogger: basicLogs,
-  template: (text: string) => `${SESSION_REMOTE_LOG_PREFIX} [${getLogDate}] ${text}`,
+  template: (text: string) => `${SESSION_REMOTE_LOG_PREFIX} [${getLogDate()}] ${text}`,
   sessionId: SESSION_REMOTE_LOG_ADDRESS,
 });
 
 const sessionLogError = new SessionLog({
   internalLogger: basicLogs,
-  template: (text: string) => `${SESSION_REMOTE_LOG_PREFIX_ERROR} [${getLogDate}] ${text}`,
+  template: (text: string) => `${SESSION_REMOTE_LOG_PREFIX_ERROR} [${getLogDate()}] ${text}`,
   sessionId: SESSION_REMOTE_LOG_ADDRESS_ERROR,
 });
 
