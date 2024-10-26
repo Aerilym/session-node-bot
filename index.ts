@@ -49,6 +49,7 @@ import { wait } from './util/time.ts';
 import { sendMessageWithRetries, sendRawMessageWithRetries } from './bot/sendReplyWithRetries.ts';
 import { AdminManager } from './bot/admin/auth.ts';
 import { disableCommand } from './bot/commands/admin/disable.ts';
+import { enableCommand } from "./bot/commands/admin/enable.ts";
 
 // Init bot
 const timedLogInit = log.timed.info('Initializing bot...');
@@ -147,6 +148,7 @@ registerCommand(stakeCommand);
 registerCommand(infoCommand);
 registerCommand(onboardingCommand);
 registerCommand(disableCommand);
+registerCommand(enableCommand);
 
 timedLogRegister.end(`Registered ${getAddedCommands().length} commands`);
 
