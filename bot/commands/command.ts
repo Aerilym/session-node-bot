@@ -15,6 +15,7 @@ export interface Command {
   readonly handler: (args: CommandArgs, msg: Message) => Promise<SessionResponse>;
   readonly name: string;
   readonly isPublic?: boolean;
+  readonly isAdmin?: boolean;
 }
 
 export const splitCommand = (text: string): { name: string; args: CommandArgs } => {

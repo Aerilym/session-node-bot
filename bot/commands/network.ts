@@ -8,13 +8,15 @@ const formatSENT = (n: number) => `${formatNumber(n / 10 ** 9)} SENT`;
 export const getNetworkInfoString = () => {
   const nNodes = getNodesLength();
   const nDecomNodes = getNDecomNodes();
-  const { height, hard_fork, staking_requirement, mainnet } = getNetworkInfo();
+  const info = getNetworkInfo();
 
-  const totalTokensStaked = nNodes * staking_requirement;
+  const network = info ? (info.mainnet ? 'Mainnet' : 'Testnet') : '';
 
-  const network = mainnet ? 'Mainnet' : 'Testnet';
+  const formattedNetworkInfo = info
+    ? `Block Height: ${formatNumber(info.height)}\nHard Fork: ${formatNumber(info.hard_fork)}\nStaking Requirement: ${formatSENT(info.staking_requirement)}\nTotal Tokens Staked: ${formatSENT(nNodes * info.staking_requirement)}`
+    : '';
 
-  return `Session Network ${network} Information:\nNodes: ${formatNumber(nNodes)}\nDecommissioned Nodes: ${formatNumber(nDecomNodes)}\nBlock Height: ${formatNumber(height)}\nHard Fork: ${formatNumber(hard_fork)}\nStaking Requirement: ${formatSENT(staking_requirement)}\nTotal Tokens Staked: ${formatSENT(totalTokensStaked)}`;
+  return `Session Network ${network} Information:\nNodes: ${formatNumber(nNodes)}\nDecommissioned Nodes: ${formatNumber(nDecomNodes)}\n${formattedNetworkInfo}`;
 };
 
 export const networkCommand: Command = {

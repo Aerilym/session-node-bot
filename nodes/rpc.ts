@@ -1,29 +1,31 @@
 import { log } from '../logger';
-import { RPC_FETCH_MAX_RETRIES, RPC_SERVICE_NODE, RPC_SERVICE_NODE_BACKUP } from "../env.ts";
-import { safeTry } from "../util/try.ts";
+import { RPC_FETCH_MAX_RETRIES, RPC_SERVICE_NODE, RPC_SERVICE_NODE_BACKUP } from '../env.ts';
+import { safeTry } from '../util/try.ts';
 
-export async function rpcFetch(
+export async function rpcFetch<T = unknown>(
   { method, params }: { method: string; params: object },
   attempt = 0,
-): Promise<[null, object] | [Error, null]> {
+): Promise<[null, T] | [Error, null]> {
   if (attempt > RPC_FETCH_MAX_RETRIES) {
-    return [new Error(`RPC fetch exceeded Max Retries (${RPC_FETCH_MAX_RETRIES})`), null]
+    return [new Error(`RPC fetch exceeded Max Retries (${RPC_FETCH_MAX_RETRIES})`), null];
   }
 
   // Alternate between the primary and backup url between attempts
-  const url = attempt % 2 === 0 ? RPC_SERVICE_NODE : RPC_SERVICE_NODE_BACKUP
-  log.debug(`Starting RPC fetch: ${url}`)
+  const url = attempt % 2 === 0 ? RPC_SERVICE_NODE : RPC_SERVICE_NODE_BACKUP;
+  log.debug(`Starting RPC fetch: ${url}`);
 
-  const [err, res] = await safeTry(fetch(url, {
-    method: 'POST',
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: '0',
-      method,
-      params,
+  const [err, res] = await safeTry(
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: '0',
+        method,
+        params,
+      }),
+      headers: { 'Content-Type': 'application/json' },
     }),
-    headers: { 'Content-Type': 'application/json' },
-  }));
+  );
 
   if (err) {
     log.error(err);
@@ -31,7 +33,9 @@ export async function rpcFetch(
   }
 
   if (!res.ok) {
-    log.error(`RPC fetch failed: (${res?.status ?? 'No Status'}) ${res?.statusText ?? 'No Status Text'}`);
+    log.error(
+      `RPC fetch failed: (${res?.status ?? 'No Status'}) ${res?.statusText ?? 'No Status Text'}`,
+    );
     return rpcFetch({ method, params }, attempt + 1);
   }
 
@@ -53,5 +57,5 @@ export async function rpcFetch(
   }
 
   log.error('RPC fetch failed, no result');
-  return rpcFetch({ method, params }, attempt + 1)
+  return rpcFetch({ method, params }, attempt + 1);
 }

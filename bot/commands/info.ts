@@ -13,11 +13,11 @@ export const infoCommand: Command = {
   isPublic: true,
   handler: async () => {
     const nUsers = users.size;
-    const { mainnet } = getNetworkInfo();
-    const network = mainnet ? 'Mainnet' : 'Testnet';
+    const networkInfo = getNetworkInfo();
+    const network = networkInfo ? (networkInfo.mainnet ? 'Mainnet' : 'Testnet') : null;
 
     return new SessionResponse(
-      `${BOT_USERNAME} Info:\nUsers: ${nUsers}\nNetwork: ${network}\n\n To learn more visit the GitHub Repo: ${githubUrl}`,
+      `${BOT_USERNAME} Info:\nUsers: ${nUsers}\n${network ? `Network: ${network}\n` : ''}\n To learn more visit the GitHub Repo: ${githubUrl}`,
     );
   },
 };

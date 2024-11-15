@@ -24,6 +24,7 @@ const formatHelpCommand = () => {
 Available commands:
 
 ${getAddedCommands()
+  .filter((command) => !command.isAdmin)
   .map((command) => `/${command.name} - ${command.description}`)
   .join('\n')}
 `;

@@ -51,7 +51,9 @@ export const getNodePubkeysForContributorAddress = (address: string) => {
   return nodesForContributorEthAddress.get(formatSearchableAddress(address));
 };
 
-let networkInfo = await getInfo();
+const [_, res] = await getInfo();
+
+let networkInfo = res;
 
 export const setNetworkInfo = (info: NetworkInfo) => {
   networkInfo = info;

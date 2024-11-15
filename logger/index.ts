@@ -37,7 +37,7 @@ function getLevelName(level: LOG_LEVEL) {
   }
 }
 
-const getLogDate = () => new Date().toISOString().substring(0, 19).replace('T', ' ')
+const getLogDate = () => new Date().toISOString().substring(0, 19).replace('T', ' ');
 
 const formatLog = (level: LOG_LEVEL, args: Array<unknown>) => {
   args.unshift(`[${getLogDate()}]`);
