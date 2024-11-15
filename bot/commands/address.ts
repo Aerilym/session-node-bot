@@ -104,7 +104,7 @@ function getEthAddressNodes(address: Address) {
 
   let contributorInfoMessage = '';
   if (contributedNotOperated.size > 0) {
-    contributorInfoMessage = '\nNodes operated:\n';
+    contributorInfoMessage = '\nStaked nodes:\n';
     for (const id of contributedNotOperated) {
       contributorInfoMessage += `  ${id}\n`;
     }
